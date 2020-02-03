@@ -150,5 +150,20 @@ module.exports = app => {
     res.send(cats)
   })
 
+  //文章详情接口
+  router.get('/articles/:id',async(req,res)=>{
+    const data = await Article.findById(req.params.id).lean()
+    data.related = await Article.find().where({
+      categories:{$in:data.categories}
+    }).limit(2)
+    res.send(data)
+  })
+
+    //英雄详情接口
+    router.get('/heroes/:id',async(req,res)=>{
+      const data = await Hero.findById(req.params.id).populate('categories itemss itemsn partners.hero ').lean()
+      res.send(data)
+    })
+
   app.use('/web/api', router)
 }
